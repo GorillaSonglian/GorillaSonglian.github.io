@@ -1,6 +1,6 @@
 ---
 layout:  post
-title:   Spring Boot定制属于自己的Input Validator
+title:   Spring Boot Customize Valid Logic
 date:    2018-05-17
 author:  抠脚大猩猩
 catalog: true
@@ -8,10 +8,10 @@ tags:
     - Spring
     - Spring Boot 
 ---
-#Spring Boot Customize Validator
+# Spring Boot Customize Validator
 
 ------
-最近在做一个标签压缩的项目的时候遇到了这样一个问题，该项目提供了多个rest接口,我们需要对用户传入的参数进行校验。其中一个校验项是用户传入的Id是否已经存在于当前的数据库中, 但是javax.validation.constraints中并没有我们需要的约束项，这意味着我们需要定制一个validator，接下来就是定制validator的实现过程。
+最近在做一个标签压缩的项目的时候遇到了这样一个问题，该项目提供了多个rest接口,我们需要对用户传入的参数进行校验。其中一个校验项是用户传入的Id是否已经存在于当前的数据库中, 但是javax.validation.constraints中并没有符合我们需求的校验逻辑，这意味着我们需要手动的实现我们需要的校验逻辑，接下来就是时间校验逻辑的过程。
 
 > * 修改pom.xml文件
 > * 定义注解接口
@@ -20,7 +20,7 @@ tags:
 
 ------
 
-##1. 修改pom.xml 文件
+## 1. 修改pom.xml 文件
 
 因为我们只实现几个基础的功能,所有我们尽需要如下几个dependency, 剩余的pom.xml所需模块可以自行添加。
 
@@ -43,7 +43,7 @@ tags:
 </dependencies>	
 ```
 
-##2. 定义注解接口
+## 2. 定义注解接口
 在定义接口前我们需要知道我们的注解是要应用于哪一层的。是类级别还是方法级别，或者是变量级别。这个需要我们在@Target标签内注明。第二个我们需要注意的地方是，我们的注解作用的时间是编译时还是运行时。这个需要我们在@Retention标签内注明。第三个就是该注解的实现类，一个注解可以有多个实现类。实现类可以坐在@Constraint标签内注明。
 以下是具体的代码实现。
 ```java
@@ -69,7 +69,7 @@ public @interface UniqueId {
 ```
 以上代码我们定义了一个名为UniqueId的注解。1.注解的作用范围是类级别。 2.注解作用的时间为运行时。3.注解的实现类为UniqueUserIdValidator.class。4.注解的默认信息为“User Id already existed”。
 
-##3.注解接口实现类
+## 3.注解接口实现类
 ```java
 package com.example.validator.model;
 
@@ -95,7 +95,7 @@ public class UniqueUserIdValidator implements ConstraintValidator<UniqueId, User
 ```
 这段代码我只是想实现一个简单的功能，所以并没有实现与数据库交互的部分。我们简单的判断了一下rest请求的对象是否符合我们要校验的逻辑，如果不符合我们就返回一个false，这里的返回值，会被@Valid标签接收，如果返回值为false，@Valid标签会抛出一个MethodArgumentNotValidException错误
 
-##4. 对需要验证的对象提供注解
+## 4. 对需要验证的对象提供注解
 ```java
 package com.example.validator.model;
 
