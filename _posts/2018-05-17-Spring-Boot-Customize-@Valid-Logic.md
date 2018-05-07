@@ -8,11 +8,9 @@ tags:
     - Spring
     - Spring Boot 
 ---
-# Spring Boot Customize Validator
-
+# Spring Boot Customize @Valid logic
 ------
-最近在做一个标签压缩的项目的时候遇到了这样一个问题，该项目提供了多个rest接口,我们需要对用户传入的参数进行校验。其中一个校验项是用户传入的Id是否已经存在于当前的数据库中, 但是javax.validation.constraints中并没有符合我们需求的校验逻辑，这意味着我们需要手动的实现我们需要的校验逻辑，接下来就是时间校验逻辑的过程。
-
+在使用Spring的时候我们通常使用@Valid标签对请求参数进行校验。但是***javax.validation.constraints***仅提供了几种简单的检验逻辑，很多时候这些简单的校验逻辑并不能满足我们在开发中的需求。比如说，我们需要校验用户传入的对象是否已经存在于数据库中。这个时候我们就需要自己定义我们的校验逻辑。这样我们仅需要在需要校验的地方加上我们自定义的标签就可以完成对于要校验对象的校验。
 > * 修改pom.xml文件
 > * 定义注解接口
 > * 为注解接口提供实现类
@@ -22,7 +20,7 @@ tags:
 
 ## 1. 修改pom.xml 文件
 
-因为我们只实现几个基础的功能,所有我们尽需要如下几个dependency, 剩余的pom.xml所需模块可以自行添加。
+因为我们只实现几个基础的功能,所有我们尽需要如下几个dependency, 剩余的pom.xml所需模块可以自行添加。本文使用的Spring Boot 版本为 2.0.1
 
 ```xml
 <dependencies>
